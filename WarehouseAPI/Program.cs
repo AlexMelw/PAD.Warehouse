@@ -1,5 +1,6 @@
 ﻿namespace WarehouseAPI
 {
+    using Controllers;
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
 
