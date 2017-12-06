@@ -1,5 +1,6 @@
 ﻿namespace WarehouseAPI.Controllers
 {
+
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
     using Stubs;

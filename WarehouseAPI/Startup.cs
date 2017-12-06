@@ -6,6 +6,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Repositories.Context;
+    using Repositories.Extensions;
 
     public class Startup
     {
@@ -34,7 +35,7 @@
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, EShopContext eShopContext)
         {
             if (env.IsDevelopment())
             {
@@ -42,6 +43,8 @@
             }
 
             app.UseMvc();
+
+            eShopContext.EnsureSeedDataForContext();
         }
     }
 }
