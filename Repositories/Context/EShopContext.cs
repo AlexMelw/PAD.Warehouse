@@ -7,10 +7,16 @@
     {
         public DbSet<Product> Products { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public EShopContext(DbContextOptions<EShopContext> options) : base(options)
         {
             Database.EnsureCreated();
-            base.OnConfiguring(optionsBuilder);
         }
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("My connection string");
+
+        //    base.OnConfiguring(optionsBuilder);
+        //}
     }
 }
