@@ -18,7 +18,6 @@
             {
                 new Product
                 {
-                    Id = 1,
                     ImageUri = "http://icons.iconarchive.com/icons/mdgraphs/iphone-4g/512/iPhone-4G-shadow-icon.png",
                     Price = 1399.99M,
                     Label = "iPhone X - Apple",
@@ -26,7 +25,6 @@
                 },
                 new Product
                 {
-                    Id = 2,
                     ImageUri = "http://icons.iconarchive.com/icons/dailyoverview/tv/256/television-06-icon.png",
                     Price = 999.99M,
                     Label = "Samsung Smart TV",
@@ -34,7 +32,6 @@
                 },
                 new Product
                 {
-                    Id = 3,
                     Price = 399.99M,
                     ImageUri = "http://icons.iconarchive.com/icons/dapino/summer-blue/512/Fan-icon.png",
                     Label = "XXX Fan",
@@ -42,7 +39,6 @@
                 },
                 new Product
                 {
-                    Id = 4,
                     Price = 1399.99M,
                     Label = "Magic wand",
                     ImageUri =
@@ -51,7 +47,6 @@
                 },
                 new Product
                 {
-                    Id = 5,
                     Price = 14.99M,
                     Label = "Funky Soccer Ball",
                     ImageUri = "http://icons.iconarchive.com/icons/martin-berube/sport/256/Soccer-icon.png",
@@ -59,7 +54,6 @@
                 },
                 new Product
                 {
-                    Id = 6,
                     Price = 4.99M,
                     Label = "Teddy bear",
                     ImageUri = "http://icons.iconarchive.com/icons/custom-icon-design/flatastic-10/512/Bear-icon.png",
@@ -67,7 +61,6 @@
                 },
                 new Product
                 {
-                    Id = 7,
                     Price = 123.78M,
                     Label = "Classic Watch",
                     ImageUri = "http://icons.iconarchive.com/icons/r34n1m4ted/chanel/512/WATCH-icon.png",
@@ -75,7 +68,6 @@
                 },
                 new Product
                 {
-                    Id = 8,
                     Price = 4.99M,
                     Label = "Walking with dinosaurs DVD",
                     ImageUri =
@@ -84,7 +76,6 @@
                 },
                 new Product
                 {
-                    Id = 9,
                     Price = 12.99M,
                     Label = "ADATA USB Stick 128 GB",
                     ImageUri =
@@ -93,7 +84,6 @@
                 },
                 new Product
                 {
-                    Id = 10,
                     Price = 1.99M,
                     Label = "ICONIX MICRO SD 16 GB",
                     ImageUri = "http://icons.iconarchive.com/icons/dakirby309/simply-styled/128/Micro-SD-Card-icon.png",
