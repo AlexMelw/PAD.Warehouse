@@ -11,9 +11,10 @@ using System;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(EShopContext))]
-    partial class EShopContextModelSnapshot : ModelSnapshot
+    [Migration("20171207081724_EShopDB4EntitiesAddProductForeignKey")]
+    partial class EShopDB4EntitiesAddProductForeignKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
