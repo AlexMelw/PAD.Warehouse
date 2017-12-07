@@ -11,9 +11,10 @@ using System;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(EShopContext))]
-    partial class EShopContextModelSnapshot : ModelSnapshot
+    [Migration("20171207080339_EShopDB4EntitiesRemoveToalColumn")]
+    partial class EShopDB4EntitiesRemoveToalColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

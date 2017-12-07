@@ -11,9 +11,10 @@ using System;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(EShopContext))]
-    partial class EShopContextModelSnapshot : ModelSnapshot
+    [Migration("20171207075134_EShopDB4Entities")]
+    partial class EShopDB4Entities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +63,8 @@ namespace Repositories.Migrations
 
                     b.Property<int>("Quantity");
 
-                    b.Property<decimal>("Total");
+                    b.Property<decimal>("Total")
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
 

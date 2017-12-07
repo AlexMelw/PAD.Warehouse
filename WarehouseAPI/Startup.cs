@@ -1,12 +1,17 @@
 ﻿namespace WarehouseAPI
 {
+    using CustomFormatter.Formatters.Internal;
+    using CustomFormatter.Formatters.Yaml;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc.Formatters;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Repositories.Context;
     using Repositories.Extensions;
+    using YamlDotNet.Serialization;
+    using YamlDotNet.Serialization.NamingConventions;
 
     public class Startup
     {
@@ -24,10 +29,20 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                options.RespectBrowserAcceptHeader = true;
+
+                options.InputFormatters.Add(new XmlSerializerInputFormatter());
+                options.OutputFormatters.Add(new XmlSerializerOutputFormatter());
+
+                options.InputFormatters.Add(new YamlInputFormatter(new DeserializerBuilder().WithNamingConvention(new CamelCaseNamingConvention()).Build()));
+                options.OutputFormatters.Add(new YamlOutputFormatter(new SerializerBuilder().WithNamingConvention(new CamelCaseNamingConvention()).Build()));
+                options.FormatterMappings.SetMediaTypeMappingForFormat("yaml", MediaTypeHeaderValues.ApplicationYaml);
+            });
+
             services.AddDbContext<EShopContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("EShopDB")));
-
 
             //var connection = "Server=tcp:warehousesrv.database.windows.net,1433;Initial Catalog=WarehouseDB;Persist Security Info=False;User ID=cheetah;Password=%%JustForPad24%%;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
             //var connection = "Data Source=SLAVA-PC;Initial Catalog=EShopDB;Integrated Security=True";
@@ -41,6 +56,12 @@
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler();
+            }
+
+            app.UseStatusCodePages();
 
             app.UseMvc();
 

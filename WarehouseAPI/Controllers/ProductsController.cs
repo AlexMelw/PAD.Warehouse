@@ -1,14 +1,14 @@
 ﻿namespace WarehouseAPI.Controllers
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using DTOs;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Repositories.Context;
     using Repositories.Entities;
 
-    [Produces("application/json")]
+    //[Produces("application/json")]
     [Route("api/Products")]
     public class ProductsController : Controller
     {
@@ -25,9 +25,9 @@
 
         //GET: api/Products
         [HttpGet]
-        public IEnumerable<Product> GetProducts()
+        public IActionResult GetProducts()
         {
-            return _context.Products;
+            return Ok(_context.Products);
         }
 
         // GET: api/Products/5
@@ -51,33 +51,40 @@
 
         // PUT: api/Products/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct([FromRoute] long id, [FromBody] Product product)
+        public async Task<IActionResult> PutProduct([FromRoute] long id, [FromBody] ProductDTO productDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != product.Id)
+            if (id != productDto.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(product).State = EntityState.Modified;
+            //_context.Entry(product).State = EntityState.Modified;
+
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productDto.Id);
+
+            product.Label = productDto.Label;
+            product.Price = productDto.Price;
+            product.Available = productDto.Available;
+            product.ImageUri = productDto.ImageUri;
 
             try
             {
-                await _context.SaveChangesAsync();
+                if (await _context.SaveChangesAsync() == 0)
+                {
+                    return StatusCode(500, "A problem happened while handling your request.");
+                }
+
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!ProductExists(id))
                 {
                     return NotFound();
-                }
-                else
-                {
-                    throw;
                 }
             }
 
@@ -86,15 +93,27 @@
 
         // POST: api/Products
         [HttpPost]
-        public async Task<IActionResult> PostProduct([FromBody] Product product)
+        public async Task<IActionResult> PostProduct([FromBody] ProductDTO productDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            var product = new Product
+            {
+                Label = productDto.Label,
+                ImageUri = productDto.ImageUri,
+                Available = productDto.Available,
+                Price = productDto.Price
+            };
+
             _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+
+            if (await _context.SaveChangesAsync() == 0)
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
 
             return CreatedAtAction("GetProduct", new { id = product.Id }, product);
         }
@@ -109,15 +128,20 @@
             }
 
             var product = await _context.Products.SingleOrDefaultAsync(m => m.Id == id);
+
             if (product == null)
             {
                 return NotFound();
             }
 
             _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
 
-            return Ok(product);
+            if (await _context.SaveChangesAsync() == 0)
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            return StatusCode(204);
         }
 
         private bool ProductExists(long id)

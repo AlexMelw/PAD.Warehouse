@@ -8,5 +8,13 @@
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
+
+        public Order Order { get; set; }
+        public long OrderId { get; set; }
+
+        public int Quantity { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public decimal Total { get; set; }
     }
 }
