@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using HATEOAS;
 
-    public class ProductDTO
+    public class ProductToGetDTO
     {
         public long Id { get; set; }
         public string Label { get; set; }

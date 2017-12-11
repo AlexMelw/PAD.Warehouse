@@ -3,6 +3,7 @@
     using Controllers;
     using CustomFormatter.Formatters.Internal;
     using CustomFormatter.Formatters.Yaml;
+    using DTOs;
     using DTOs.Creational;
     using DTOs.Updatable;
     using Microsoft.AspNetCore.Builder;
@@ -76,6 +77,7 @@
                 cfg.CreateMap<Product, ProductToCreateDTO>();
                 cfg.CreateMap<ProductToUpdateDTO, Product>();
                 cfg.CreateMap<Product, ProductToPatchDTO>();
+                cfg.CreateMap<Product, ProductToGetDTO>();
             });
 
             eShopContext.EnsureSeedDataForContext();

@@ -1,11 +1,13 @@
 ﻿namespace WarehouseAPI.Controllers
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
     using DTOs;
     using DTOs.Creational;
     using DTOs.Updatable;
+    using HATEOAS;
     using Microsoft.AspNetCore.JsonPatch;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -31,7 +33,22 @@
         [HttpGet]
         public IActionResult GetProducts()
         {
-            return Ok(_context.Products);
+            var hateoasProductsDTO = Mapper.Map<List<ProductToGetDTO>>(_context.Products);
+
+            hateoasProductsDTO.ForEach(p =>
+            {
+                p.Links = new List<Link>
+                {
+                    new Link
+                    {
+                        Rel = $"/{nameof(Product)}",
+                        Type = "GET",
+                        Href = Url.Action("GetProduct", "Products", new { Id = p.Id }, Request.Scheme, Request.Host.Host)
+                    }
+                };
+            });
+
+            return Ok(hateoasProductsDTO);
         }
 
         // GET: api/Products/5
@@ -45,12 +62,25 @@
 
             var product = await _context.Products.SingleOrDefaultAsync(m => m.Id == id);
 
+            var hateoasProductDTO = Mapper.Map<ProductToGetDTO>(product);
+
             if (product == null)
             {
                 return NotFound();
             }
 
-            return Ok(product);
+            hateoasProductDTO.Links = new List<Link>
+            {
+                new Link
+                {
+                    Rel = $"/{nameof(Product)}",
+                    Type = "GET",
+                    Href = Url.Action("GetProduct", "Products", new { Id = hateoasProductDTO.Id }, Request.Scheme, Request.Host.Host)
+                }
+            };
+
+
+            return Ok(hateoasProductDTO);
         }
 
         // PUT: api/Products/5

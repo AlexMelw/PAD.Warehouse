@@ -8,10 +8,10 @@
     {
         public static ProductsDataSource Default { get; } = new ProductsDataSource();
 
-        public IEnumerable<ProductDTO> Products
+        public IEnumerable<ProductToGetDTO> Products
         {
             get {
-                yield return new ProductDTO
+                yield return new ProductToGetDTO
                 {
                     Id = 1,
                     ImageUri = "http://icons.iconarchive.com/icons/mdgraphs/iphone-4g/512/iPhone-4G-shadow-icon.png",
@@ -29,7 +29,7 @@
                     }
                 };
 
-                yield return new ProductDTO
+                yield return new ProductToGetDTO
                 {
                     Id = 2,
                     ImageUri = "http://icons.iconarchive.com/icons/dailyoverview/tv/256/television-06-icon.png",
@@ -47,7 +47,7 @@
                     }
                 };
 
-                yield return new ProductDTO
+                yield return new ProductToGetDTO
                 {
                     Id = 3,
                     Price = 399.99M,
@@ -65,7 +65,7 @@
                     }
                 };
 
-                yield return new ProductDTO
+                yield return new ProductToGetDTO
                 {
                     Id = 4,
                     Price = 1399.99M,
@@ -84,7 +84,7 @@
                     }
                 };
 
-                yield return new ProductDTO
+                yield return new ProductToGetDTO
                 {
                     Id = 5,
                     Price = 14.99M,
@@ -102,7 +102,7 @@
                     }
                 };
 
-                yield return new ProductDTO
+                yield return new ProductToGetDTO
                 {
                     Id = 6,
                     Price = 4.99M,
@@ -120,7 +120,7 @@
                     }
                 };
 
-                yield return new ProductDTO
+                yield return new ProductToGetDTO
                 {
                     Id = 7,
                     Price = 123.78M,
@@ -138,7 +138,7 @@
                     }
                 };
 
-                yield return new ProductDTO
+                yield return new ProductToGetDTO
                 {
                     Id = 8,
                     Price = 4.99M,
@@ -157,7 +157,7 @@
                     }
                 };
 
-                yield return new ProductDTO
+                yield return new ProductToGetDTO
                 {
                     Id = 9,
                     Price = 12.99M,
@@ -176,7 +176,7 @@
                     }
                 };
 
-                yield return new ProductDTO
+                yield return new ProductToGetDTO
                 {
                     Id = 10,
                     Price = 1.99M,
