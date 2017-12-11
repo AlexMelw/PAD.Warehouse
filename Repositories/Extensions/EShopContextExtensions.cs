@@ -103,7 +103,39 @@
             }
 
             var customers = new List<Customer>
-            { };
+            {
+                new Customer
+                {
+                    FirstName = "Nickolas",
+                    LastName = "Buxy",
+                },
+                new Customer
+                {
+                    FirstName = "Mandel",
+                    LastName = "Gudgen"
+                },
+                new Customer
+                {
+                    FirstName = "Lonnie",
+                    LastName = "Gilfether",
+                },
+                new Customer
+                {
+                    FirstName = "Boyd",
+                    LastName = "Howen",
+                },
+                new Customer
+                {
+                    FirstName = "Tamas",
+                    LastName = "Riseam",
+                },
+                new Customer
+                {
+                    FirstName = "Willow",
+                    LastName = "Bocken",
+                },
+
+            };
 
             context.Customers.AddRange(customers);
             context.SaveChanges();
@@ -111,7 +143,32 @@
 
         public static void EnsureSeedDataForOrders(this EShopContext context)
         {
+            if (context.Orders.Any())
+            {
+                return;
+            }
 
+            var orders = new List<Order>
+            {
+                new Order
+                {
+                    CustomerId = 1,
+                    Customer = null,
+                    DeliveryAddress = "3 Forest Dale Way",
+                    OrderDetails = new List<OrderDetail>
+                    {
+                        new OrderDetail
+                        {
+                            ProductId = 1,
+                            Quantity = 2,
+                        }
+                    }
+                }
+            };
+
+
+
+            context.Orders.AddRange(orders);
             context.SaveChanges();
         }
     }

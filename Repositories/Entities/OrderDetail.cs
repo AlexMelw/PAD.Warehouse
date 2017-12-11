@@ -16,8 +16,5 @@
         public long OrderId { get; set; }
 
         public int Quantity { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public decimal Total { get; set; }
     }
 }

@@ -11,9 +11,10 @@ using System;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(EShopContext))]
-    partial class EShopContextModelSnapshot : ModelSnapshot
+    [Migration("20171211151207_AddOrderTotalField")]
+    partial class AddOrderTotalField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,6 +46,8 @@ namespace Repositories.Migrations
 
                     b.Property<string>("DeliveryAddress")
                         .IsRequired();
+
+                    b.Property<decimal>("Total");
 
                     b.HasKey("Id");
 
