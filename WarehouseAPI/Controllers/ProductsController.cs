@@ -3,6 +3,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using DTOs;
+    using Microsoft.AspNetCore.JsonPatch;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Repositories.Context;
@@ -78,7 +79,6 @@
                 {
                     return StatusCode(500, "A problem happened while handling your request.");
                 }
-
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -142,6 +142,59 @@
             }
 
             return StatusCode(204);
+        }
+
+        // PATCH: api/Products/5
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchProduct(long id, [FromBody] JsonPatchDocument<ProductToPatchDTO> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ProductExists(id))
+            {
+                return NotFound();
+            }
+
+            Product product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
+
+            var patchedProduct = new ProductToPatchDTO
+            {
+                Id = product.Id,
+                Label = product.Label,
+                Price = product.Price,
+                ImageUri = product.ImageUri,
+                Available = product.Available
+            };
+
+            patchDoc.ApplyTo(patchedProduct, ModelState);
+
+            TryValidateModel(patchedProduct);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (patchedProduct.Id != product.Id)
+            {
+                ModelState.AddModelError(nameof(product.Id), "Modification of ID isn't allowed.");
+                return BadRequest(ModelState);
+            }
+
+            product.Label = patchedProduct.Label;
+            product.ImageUri = patchedProduct.ImageUri;
+            product.Available= patchedProduct.Available;
+            product.Price = patchedProduct.Price;
+
+            if (_context.SaveChanges() == 0)
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            return NoContent();
         }
 
         private bool ProductExists(long id)

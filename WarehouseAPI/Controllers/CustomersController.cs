@@ -10,6 +10,8 @@ using Repositories.Entities;
 
 namespace WarehouseAPI.Controllers
 {
+    using Microsoft.AspNetCore.JsonPatch;
+
     [Produces("application/json")]
     [Route("api/Customers")]
     public class CustomersController : Controller
