@@ -9,7 +9,7 @@
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; }
         public long ProductId { get; set; }
 
         public Order Order { get; set; }
