@@ -1,10 +1,10 @@
 ﻿namespace WarehouseAPI
 {
     using Controllers;
-    using CustomFormatter.Formatters.Internal;
-    using CustomFormatter.Formatters.Yaml;
     using DTOs;
     using DTOs.Creational;
+    using DTOs.Gettable;
+    using DTOs.Patchable;
     using DTOs.Updatable;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -12,6 +12,8 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using OutputFormatters.Internal;
+    using OutputFormatters.Yaml;
     using Repositories.Context;
     using Repositories.Entities;
     using Repositories.Extensions;

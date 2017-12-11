@@ -6,6 +6,8 @@
     using AutoMapper;
     using DTOs;
     using DTOs.Creational;
+    using DTOs.Gettable;
+    using DTOs.Patchable;
     using DTOs.Updatable;
     using HATEOAS;
     using Microsoft.AspNetCore.JsonPatch;

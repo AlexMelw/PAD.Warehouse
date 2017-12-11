@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using DTOs;
+    using DTOs.Gettable;
     using HATEOAS;
 
     public class ProductsDataSource

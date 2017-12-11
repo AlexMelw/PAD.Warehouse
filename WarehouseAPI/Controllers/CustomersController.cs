@@ -4,7 +4,10 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
+    using DTOs.Creational;
+    using DTOs.Gettable;
     using DTOs.Patchable;
+    using DTOs.Updatable;
     using HATEOAS;
     using Microsoft.AspNetCore.JsonPatch;
     using Microsoft.AspNetCore.Mvc;
@@ -74,7 +77,7 @@
 
         // PUT: api/Customers/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer([FromRoute] long id, [FromBody] Customer customer)
+        public async Task<IActionResult> PutCustomer([FromRoute] long id, [FromBody] CustomerToUpdateDTO customerDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -109,12 +112,14 @@
 
         // POST: api/Customers
         [HttpPost]
-        public async Task<IActionResult> PostCustomer([FromBody] Customer customer)
+        public async Task<IActionResult> PostCustomer([FromBody] CustomerToCreateDTO customerDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+            var customer = Mapper.Map<Customer>(customerDTO);
 
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
@@ -186,6 +191,8 @@
 
             return NoContent();
         }
+
+        #region Helpers
 
         private IActionResult GetCustomersOnly()
         {
@@ -471,4 +478,6 @@
             return _context.Customers.Any(e => e.Id == id);
         }
     }
+
+    #endregion
 }

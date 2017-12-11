@@ -1,4 +1,4 @@
-﻿namespace WarehouseAPI.DTOs
+﻿namespace WarehouseAPI.DTOs.Gettable
 {
     using System.Collections.Generic;
     using HATEOAS;

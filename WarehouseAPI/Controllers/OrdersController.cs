@@ -3,6 +3,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
+    using DTOs.Gettable;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Repositories.Context;

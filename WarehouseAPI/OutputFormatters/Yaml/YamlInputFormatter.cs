@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc.Formatters;
-using System;
-using System.Threading.Tasks;
-using System.Text;
-using YamlDotNet.Serialization;
-using CustomFormatter.Formatters.Internal;
-
-namespace CustomFormatter.Formatters.Yaml
+﻿namespace WarehouseAPI.OutputFormatters.Yaml
 {
-public class YamlInputFormatter : TextInputFormatter
+    using System;
+    using System.Text;
+    using System.Threading.Tasks;
+    using Internal;
+    using Microsoft.AspNetCore.Mvc.Formatters;
+    using YamlDotNet.Serialization;
+
+    public class YamlInputFormatter : TextInputFormatter
 {
     private readonly Deserializer _deserializer;
 
