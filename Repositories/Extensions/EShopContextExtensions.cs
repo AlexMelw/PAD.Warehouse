@@ -7,7 +7,7 @@
 
     public static class EShopContextExtensions
     {
-        public static void EnsureSeedDataForContext(this EShopContext context)
+        public static void EnsureSeedDataForProducts(this EShopContext context)
         {
             if (context.Products.Any())
             {
@@ -92,6 +92,26 @@
             };
 
             context.Products.AddRange(products);
+            context.SaveChanges();
+        }
+
+        public static void EnsureSeedDataForCustomers(this EShopContext context)
+        {
+            if (context.Customers.Any())
+            {
+                return;
+            }
+
+            var customers = new List<Customer>
+            { };
+
+            context.Customers.AddRange(customers);
+            context.SaveChanges();
+        }
+
+        public static void EnsureSeedDataForOrders(this EShopContext context)
+        {
+
             context.SaveChanges();
         }
     }

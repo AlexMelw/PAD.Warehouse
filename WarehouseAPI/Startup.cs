@@ -80,7 +80,9 @@
                 cfg.CreateMap<Product, ProductToGetDTO>();
             });
 
-            eShopContext.EnsureSeedDataForContext();
+            eShopContext.EnsureSeedDataForProducts();
+            eShopContext.EnsureSeedDataForCustomers();
+            eShopContext.EnsureSeedDataForOrders();
         }
     }
 }
