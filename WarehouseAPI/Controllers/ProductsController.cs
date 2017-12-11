@@ -3,6 +3,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using DTOs;
+    using DTOs.Creational;
     using Microsoft.AspNetCore.JsonPatch;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -86,6 +87,7 @@
                 {
                     return NotFound();
                 }
+                return StatusCode(500, $"Simultaneously attempt to modify {nameof(Product)} entity.");
             }
 
             return NoContent();
@@ -93,7 +95,7 @@
 
         // POST: api/Products
         [HttpPost]
-        public async Task<IActionResult> PostProduct([FromBody] ProductDTO productDto)
+        public async Task<IActionResult> PostProduct([FromBody] ProductToCreateDTO productDto)
         {
             if (!ModelState.IsValid)
             {
@@ -186,7 +188,7 @@
 
             product.Label = patchedProduct.Label;
             product.ImageUri = patchedProduct.ImageUri;
-            product.Available= patchedProduct.Available;
+            product.Available = patchedProduct.Available;
             product.Price = patchedProduct.Price;
 
             if (_context.SaveChanges() == 0)

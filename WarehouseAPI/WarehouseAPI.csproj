@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="DTOs\General\" />
-    <Folder Include="DTOs\Creational\" />
     <Folder Include="DTOs\Updatable\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
