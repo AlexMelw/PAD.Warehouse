@@ -2,8 +2,10 @@
 {
     using System.Linq;
     using System.Threading.Tasks;
+    using AutoMapper;
     using DTOs;
     using DTOs.Creational;
+    using DTOs.Updatable;
     using Microsoft.AspNetCore.JsonPatch;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -53,26 +55,21 @@
 
         // PUT: api/Products/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct([FromRoute] long id, [FromBody] ProductDTO productDto)
+        public async Task<IActionResult> PutProduct([FromRoute] long id, [FromBody] ProductToUpdateDTO productDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != productDto.Id)
-            {
-                return BadRequest();
-            }
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
 
-            //_context.Entry(product).State = EntityState.Modified;
+            Mapper.Map(productDto, product);
 
-            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productDto.Id);
-
-            product.Label = productDto.Label;
-            product.Price = productDto.Price;
-            product.Available = productDto.Available;
-            product.ImageUri = productDto.ImageUri;
+            //product.Label = productDto.Label;
+            //product.Price = productDto.Price;
+            //product.Available = productDto.Available;
+            //product.ImageUri = productDto.ImageUri;
 
             try
             {
@@ -102,13 +99,15 @@
                 return BadRequest(ModelState);
             }
 
-            var product = new Product
-            {
-                Label = productDto.Label,
-                ImageUri = productDto.ImageUri,
-                Available = productDto.Available,
-                Price = productDto.Price
-            };
+            //var product = new Product
+            //{
+            //    Label = productDto.Label,
+            //    ImageUri = productDto.ImageUri,
+            //    Available = productDto.Available,
+            //    Price = productDto.Price
+            //};
+
+            Product product = Mapper.Map<Product>(productDto);
 
             _context.Products.Add(product);
 
@@ -162,14 +161,16 @@
 
             Product product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
 
-            var patchedProduct = new ProductToPatchDTO
-            {
-                Id = product.Id,
-                Label = product.Label,
-                Price = product.Price,
-                ImageUri = product.ImageUri,
-                Available = product.Available
-            };
+            //var patchedProduct = new ProductToPatchDTO
+            //{
+            //    Id = product.Id,
+            //    Label = product.Label,
+            //    Price = product.Price,
+            //    ImageUri = product.ImageUri,
+            //    Available = product.Available
+            //};
+
+            var patchedProduct = Mapper.Map<ProductToPatchDTO>(product);
 
             patchDoc.ApplyTo(patchedProduct, ModelState);
 
@@ -186,10 +187,12 @@
                 return BadRequest(ModelState);
             }
 
-            product.Label = patchedProduct.Label;
-            product.ImageUri = patchedProduct.ImageUri;
-            product.Available = patchedProduct.Available;
-            product.Price = patchedProduct.Price;
+            //product.Label = patchedProduct.Label;
+            //product.ImageUri = patchedProduct.ImageUri;
+            //product.Available = patchedProduct.Available;
+            //product.Price = patchedProduct.Price;
+
+            Mapper.Map(patchedProduct, product);
 
             if (_context.SaveChanges() == 0)
             {

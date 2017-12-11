@@ -1,7 +1,10 @@
 ﻿namespace WarehouseAPI
 {
+    using Controllers;
     using CustomFormatter.Formatters.Internal;
     using CustomFormatter.Formatters.Yaml;
+    using DTOs.Creational;
+    using DTOs.Updatable;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Formatters;
@@ -9,6 +12,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Repositories.Context;
+    using Repositories.Entities;
     using Repositories.Extensions;
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NamingConventions;
@@ -36,8 +40,10 @@
                 options.InputFormatters.Add(new XmlSerializerInputFormatter());
                 options.OutputFormatters.Add(new XmlSerializerOutputFormatter());
 
-                options.InputFormatters.Add(new YamlInputFormatter(new DeserializerBuilder().WithNamingConvention(new CamelCaseNamingConvention()).Build()));
-                options.OutputFormatters.Add(new YamlOutputFormatter(new SerializerBuilder().WithNamingConvention(new CamelCaseNamingConvention()).Build()));
+                options.InputFormatters.Add(new YamlInputFormatter(new DeserializerBuilder()
+                    .WithNamingConvention(new CamelCaseNamingConvention()).Build()));
+                options.OutputFormatters.Add(new YamlOutputFormatter(new SerializerBuilder()
+                    .WithNamingConvention(new CamelCaseNamingConvention()).Build()));
                 options.FormatterMappings.SetMediaTypeMappingForFormat("yaml", MediaTypeHeaderValues.ApplicationYaml);
             });
 
@@ -64,6 +70,13 @@
             app.UseStatusCodePages();
 
             app.UseMvc();
+
+            AutoMapper.Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Product, ProductToCreateDTO>();
+                cfg.CreateMap<ProductToUpdateDTO, Product>();
+                cfg.CreateMap<Product, ProductToPatchDTO>();
+            });
 
             eShopContext.EnsureSeedDataForContext();
         }
