@@ -89,7 +89,7 @@
 
         // PUT: api/Products/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct([FromRoute] long id, [FromBody] ProductToUpdateDTO productDto)
+        public async Task<IActionResult> PutProduct([FromRoute] long id, [FromBody] ProductToUpdateDTO productDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -98,7 +98,7 @@
 
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
 
-            Mapper.Map(productDto, product);
+            Mapper.Map(productDTO, product);
 
             //product.Label = productDto.Label;
             //product.Price = productDto.Price;

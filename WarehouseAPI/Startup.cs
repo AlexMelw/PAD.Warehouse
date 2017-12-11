@@ -76,12 +76,16 @@
 
             AutoMapper.Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<Product, ProductToCreateDTO>();
+                cfg.CreateMap<Product, ProductToGetDTO>();
+                cfg.CreateMap<ProductToCreateDTO, Product>();
                 cfg.CreateMap<ProductToUpdateDTO, Product>();
                 cfg.CreateMap<Product, ProductToPatchDTO>();
-                cfg.CreateMap<Product, ProductToGetDTO>();
 
                 cfg.CreateMap<Customer, CustomerToGetDTO>();
+                cfg.CreateMap<CustomerToCreateDTO, Customer>();
+                cfg.CreateMap<CustomerToUpdateDTO, Customer>();
+                cfg.CreateMap<Customer, CustomerToPatchDTO>();
+
                 cfg.CreateMap<Order, OrderToGetDTO>();
                 cfg.CreateMap<OrderDetail, OrderDetailToGetDTO>();
             });

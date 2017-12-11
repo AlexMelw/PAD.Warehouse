@@ -84,12 +84,9 @@
                 return BadRequest(ModelState);
             }
 
-            if (id != customer.Id)
-            {
-                return BadRequest();
-            }
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == id);
 
-            _context.Entry(customer).State = EntityState.Modified;
+            Mapper.Map(customerDTO, customer);
 
             try
             {
@@ -101,10 +98,7 @@
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(500, $"Simultaneously attempt to modify {nameof(Customer)} entity.");
             }
 
             return NoContent();
@@ -192,7 +186,7 @@
             return NoContent();
         }
 
-        #region Helpers
+        #region Helper Methods
 
         private IActionResult GetCustomersOnly()
         {
