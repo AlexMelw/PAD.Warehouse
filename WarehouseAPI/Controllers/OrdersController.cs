@@ -26,7 +26,7 @@
 
         // GET: api/Orders
         [HttpGet]
-        public async Task<IActionResult> GetOrdersAsync()
+        public async Task<IActionResult> GetOrders()
         {
             var orders = await _context.Orders
                 .Include(o => o.OrderDetails)

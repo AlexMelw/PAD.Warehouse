@@ -64,15 +64,15 @@
 
             if (withOrders && withOrderDetails)
             {
-                return await GetCustomerWithOrdersAndOrderDetailsAsync(id);
+                return await GetCustomerWithOrdersAndOrderDetails(id);
             }
 
             if (withOrders && !withOrderDetails)
             {
-                return await GetCustomerWithOrdersAsync(id);
+                return await GetCustomerWithOrders(id);
             }
 
-            return await GetCustomerOnlyAsync(id);
+            return await GetCustomerOnly(id);
         }
 
         // PUT: api/Customers/5
@@ -331,7 +331,7 @@
             return Ok(hateoasCustomerDTOs);
         }
 
-        private async Task<IActionResult> GetCustomerWithOrdersAndOrderDetailsAsync(long customerId)
+        private async Task<IActionResult> GetCustomerWithOrdersAndOrderDetails(long customerId)
         {
             Customer customer = await _context.Customers
                 .Include(c => c.Orders)
@@ -404,7 +404,7 @@
             return Ok(hateoasCustomerDTO);
         }
 
-        private async Task<IActionResult> GetCustomerWithOrdersAsync(long customerId)
+        private async Task<IActionResult> GetCustomerWithOrders(long customerId)
         {
             Customer customer = await _context.Customers
                 .Include(c => c.Orders)
@@ -447,7 +447,7 @@
             return Ok(hateoasCustomerDTO);
         }
 
-        private async Task<IActionResult> GetCustomerOnlyAsync(long customerId)
+        private async Task<IActionResult> GetCustomerOnly(long customerId)
         {
             Customer customer = await _context.Customers
                 .SingleOrDefaultAsync(c => c.Id == customerId);
