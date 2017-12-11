@@ -51,7 +51,15 @@
             });
 
             services.AddDbContext<EShopContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("EShopDB")));
+            {
+#if DEBUG
+                options.UseSqlServer(Configuration.GetConnectionString("EShopDBLocal"));
+#endif
+
+#if RELEASE
+                options.UseSqlServer(Configuration.GetConnectionString("EShopDbRemote"));
+#endif
+            });
 
             //var connection = "Server=tcp:warehousesrv.database.windows.net,1433;Initial Catalog=WarehouseDB;Persist Security Info=False;User ID=cheetah;Password=%%JustForPad24%%;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
             //var connection = "Data Source=SLAVA-PC;Initial Catalog=EShopDB;Integrated Security=True";
