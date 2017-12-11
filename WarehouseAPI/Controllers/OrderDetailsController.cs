@@ -1,5 +1,6 @@
 ﻿namespace WarehouseAPI.Controllers
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
@@ -30,7 +31,7 @@
         {
             var orderDetails = await _context.OrderDetails.ToListAsync();
 
-            var orderDetailDTOs = Mapper.Map<OrderDetailToGetDTO>(orderDetails);
+            var orderDetailDTOs = Mapper.Map<List<OrderDetailToGetDTO>>(orderDetails);
 
             return Ok(orderDetailDTOs);
         }

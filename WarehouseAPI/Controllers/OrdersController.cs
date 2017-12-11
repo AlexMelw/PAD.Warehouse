@@ -1,5 +1,6 @@
 ﻿namespace WarehouseAPI.Controllers
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
@@ -32,7 +33,7 @@
                 .Include(o => o.OrderDetails)
                 .ToListAsync();
 
-            var orderDTOs = Mapper.Map<OrderToGetDTO>(orders);
+            var orderDTOs = Mapper.Map<List<OrderToGetDTO>>(orders);
 
             return Ok(orderDTOs);
         }
