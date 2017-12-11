@@ -10,7 +10,7 @@ using Repositories.Entities;
 
 namespace WarehouseAPI.Controllers
 {
-    [Produces("application/json")]
+    //[Produces("application/json")]
     [Route("api/Orders")]
     public class OrdersController : Controller
     {
