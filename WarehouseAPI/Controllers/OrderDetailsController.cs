@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Repositories.Context;
-using Repositories.Entities;
-
-namespace WarehouseAPI.Controllers
+﻿namespace WarehouseAPI.Controllers
 {
+    using System.Linq;
+    using System.Threading.Tasks;
     using AutoMapper;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using Repositories.Context;
+    using Repositories.Entities;
 
     //[Produces("application/json")]
     [Route("api/OrderDetails")]
@@ -18,10 +14,14 @@ namespace WarehouseAPI.Controllers
     {
         private readonly EShopContext _context;
 
+        #region CONSTRUCTORS
+
         public OrderDetailsController(EShopContext context)
         {
             _context = context;
         }
+
+        #endregion
 
         // GET: api/OrderDetails
         [HttpGet]

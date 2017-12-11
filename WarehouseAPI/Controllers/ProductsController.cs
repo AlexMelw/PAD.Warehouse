@@ -43,7 +43,8 @@
                     {
                         Rel = $"/{nameof(Product)}",
                         Type = "GET",
-                        Href = Url.Action("GetProduct", "Products", new { Id = p.Id }, Request.Scheme, Request.Host.Host)
+                        Href = Url.Action("GetProduct", "Products", new { Id = p.Id }, Request.Scheme,
+                            Request.Host.Host)
                     }
                 };
             });
@@ -75,7 +76,8 @@
                 {
                     Rel = $"/{nameof(Product)}",
                     Type = "GET",
-                    Href = Url.Action("GetProduct", "Products", new { Id = hateoasProductDTO.Id }, Request.Scheme, Request.Host.Host)
+                    Href = Url.Action("GetProduct", "Products", new { Id = hateoasProductDTO.Id }, Request.Scheme,
+                        Request.Host.Host)
                 }
             };
 
