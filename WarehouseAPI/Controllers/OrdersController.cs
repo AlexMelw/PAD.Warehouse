@@ -10,6 +10,8 @@ using Repositories.Entities;
 
 namespace WarehouseAPI.Controllers
 {
+    using AutoMapper;
+
     //[Produces("application/json")]
     [Route("api/Orders")]
     public class OrdersController : Controller
@@ -23,9 +25,15 @@ namespace WarehouseAPI.Controllers
 
         // GET: api/Orders
         [HttpGet]
-        public IEnumerable<Order> GetOrders()
+        public async Task<IActionResult> GetOrdersAsync()
         {
-            return _context.Orders;
+            var orders = await _context.Orders
+                .Include(o => o.OrderDetails)
+                .ToListAsync();
+
+            var orderDTOs = Mapper.Map<OrderToGetDTO>(orders);
+
+            return Ok(orderDTOs);
         }
 
         // GET: api/Orders/5
@@ -44,7 +52,9 @@ namespace WarehouseAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(order);
+            var orderDTO = Mapper.Map<OrderToGetDTO>(order);
+
+            return Ok(orderDTO);
         }
 
         // PUT: api/Orders/5
