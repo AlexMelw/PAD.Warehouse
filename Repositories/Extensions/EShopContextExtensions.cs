@@ -134,7 +134,6 @@
                     FirstName = "Willow",
                     LastName = "Bocken",
                 },
-
             };
 
             context.Customers.AddRange(customers);
@@ -161,11 +160,149 @@
                         {
                             ProductId = 1,
                             Quantity = 2,
+                        },
+                        new OrderDetail
+                        {
+                            ProductId = 3,
+                            Quantity = 1
                         }
                     }
-                }
-            };
+                },
+                new Order
+                {
+                    CustomerId = 1,
+                    Customer = null,
+                    DeliveryAddress = "14 Center Court",
+                    OrderDetails = new List<OrderDetail>
+                    {
+                        new OrderDetail
+                        {
+                            ProductId = 1,
+                            Quantity = 2,
+                        }
+                    }
+                },
 
+                new Order
+                {
+                    CustomerId = 5,
+                    Customer = null,
+                    DeliveryAddress = "8 Northfield Terrace",
+                    OrderDetails = new List<OrderDetail>
+                    {
+                        new OrderDetail
+                        {
+                            ProductId = 1,
+                            Quantity = 3,
+                        },
+                        new OrderDetail
+                        {
+                            ProductId = 10,
+                            Quantity = 1
+                        },
+                        new OrderDetail
+                        {
+                            ProductId = 4,
+                            Quantity = 1
+                        }
+                    }
+                },
+
+                new Order
+                {
+                    CustomerId = 6,
+                    Customer = null,
+                    DeliveryAddress = "9 Buhler Alley",
+                    OrderDetails = new List<OrderDetail>
+                    {
+                        new OrderDetail
+                        {
+                            ProductId = 7,
+                            Quantity = 1,
+                        },
+                        new OrderDetail
+                        {
+                            ProductId = 3,
+                            Quantity = 1
+                        },
+                        new OrderDetail
+                        {
+                            ProductId = 5,
+                            Quantity = 1,
+                        },
+                        new OrderDetail
+                        {
+                            ProductId = 8,
+                            Quantity = 1
+                        }
+                    }
+                },
+
+                new Order
+                {
+                    CustomerId = 4,
+                    Customer = null,
+                    DeliveryAddress = "9151 Becker Circle",
+                    OrderDetails = new List<OrderDetail>
+                    {
+                        new OrderDetail
+                        {
+                            ProductId = 1,
+                            Quantity = 1,
+                        },
+                        new OrderDetail
+                        {
+                            ProductId = 4,
+                            Quantity = 1
+                        }
+                    }
+                },
+
+                new Order
+                {
+                    CustomerId = 4,
+                    Customer = null,
+                    DeliveryAddress = "90640 5th Alley",
+                    OrderDetails = new List<OrderDetail>
+                    {
+                        new OrderDetail
+                        {
+                            ProductId = 8,
+                            Quantity = 1,
+                        },
+                        new OrderDetail
+                        {
+                            ProductId = 6,
+                            Quantity = 1
+                        }
+                    }
+                },
+
+                new Order
+                {
+                    CustomerId = 3,
+                    Customer = null,
+                    DeliveryAddress = "10869 Arizona Street",
+                    OrderDetails = new List<OrderDetail>
+                    {
+                        new OrderDetail
+                        {
+                            ProductId = 1,
+                            Quantity = 1,
+                        },
+                        new OrderDetail
+                        {
+                            ProductId = 2,
+                            Quantity = 1,
+                        },
+                        new OrderDetail
+                        {
+                            ProductId = 9,
+                            Quantity = 1
+                        }
+                    }
+                },
+            };
 
 
             context.Orders.AddRange(orders);
