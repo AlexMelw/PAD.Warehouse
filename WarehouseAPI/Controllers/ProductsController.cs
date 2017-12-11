@@ -33,9 +33,9 @@
         [HttpGet]
         public IActionResult GetProducts()
         {
-            var hateoasProductsDTO = Mapper.Map<List<ProductToGetDTO>>(_context.Products);
+            var hateoasProductDTOs = Mapper.Map<List<ProductToGetDTO>>(_context.Products);
 
-            hateoasProductsDTO.ForEach(p =>
+            hateoasProductDTOs.ForEach(p =>
             {
                 p.Links = new List<Link>
                 {
@@ -48,7 +48,7 @@
                 };
             });
 
-            return Ok(hateoasProductsDTO);
+            return Ok(hateoasProductDTOs);
         }
 
         // GET: api/Products/5
@@ -60,7 +60,7 @@
                 return BadRequest(ModelState);
             }
 
-            var product = await _context.Products.SingleOrDefaultAsync(m => m.Id == id);
+            var product = await _context.Products.SingleOrDefaultAsync(p => p.Id == id);
 
             var hateoasProductDTO = Mapper.Map<ProductToGetDTO>(product);
 

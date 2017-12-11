@@ -78,6 +78,10 @@
                 cfg.CreateMap<ProductToUpdateDTO, Product>();
                 cfg.CreateMap<Product, ProductToPatchDTO>();
                 cfg.CreateMap<Product, ProductToGetDTO>();
+
+                cfg.CreateMap<Customer, CustomerToGetDTO>();
+                cfg.CreateMap<Order, OrderToGetDTO>();
+                cfg.CreateMap<OrderDetail, OrderDetailToGetDTO>();
             });
 
             eShopContext.EnsureSeedDataForProducts();
