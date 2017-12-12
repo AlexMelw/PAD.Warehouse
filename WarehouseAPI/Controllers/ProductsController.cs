@@ -1,4 +1,6 @@
-﻿namespace WarehouseAPI.Controllers
+﻿using WarehouseAPI.WebApiHelpers;
+
+namespace WarehouseAPI.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -33,9 +35,44 @@
 
         //GET: api/Products
         [HttpGet]
-        public IActionResult GetProducts()
+        public IActionResult GetProducts([FromQuery] ProductFilter filter)
         {
-            var hateoasProductDTOs = Mapper.Map<List<ProductToGetDTO>>(_context.Products);
+            List<Product> products = default;
+
+            if (filter.Label != null)
+            {
+                products = _context.Products?.Where(p => p.Label.Contains(filter.Label)).ToList() ?? Enumerable.Empty<Product>().ToList();
+                return TransformProductsToDTOs(products);
+            }
+
+            if (filter.LPrice != 0)
+            {
+                products = _context.Products?.Where(p => p.Price <= filter.LPrice).ToList() ?? Enumerable.Empty<Product>().ToList();
+                return TransformProductsToDTOs(products);
+            }
+
+            if (filter.GPrice != decimal.MaxValue)
+            {
+                products = _context.Products?.Where(p => p.Price >= filter.GPrice).ToList() ?? Enumerable.Empty<Product>().ToList();
+                return TransformProductsToDTOs(products);
+            }
+
+            if (filter.Page.Size != int.MaxValue)
+            {
+                products = _context.Products?.Skip((filter.Page.Num - 1) * filter.Page.Size)
+                    .Take(filter.Page.Size)
+                    .ToList() ?? Enumerable.Empty<Product>().ToList();
+
+                return TransformProductsToDTOs(products);
+            }
+
+            products = _context.Products?.ToList() ?? Enumerable.Empty<Product>().ToList();
+            return TransformProductsToDTOs(products);
+        }
+
+        private IActionResult TransformProductsToDTOs(List<Product> products)
+        {
+            var hateoasProductDTOs = Mapper.Map<List<ProductToGetDTO>>(products);
 
             hateoasProductDTOs.ForEach(p =>
             {
@@ -52,6 +89,7 @@
             });
 
             return Ok(hateoasProductDTOs);
+          
         }
 
         // GET: api/Products/5
