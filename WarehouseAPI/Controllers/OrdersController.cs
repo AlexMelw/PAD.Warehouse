@@ -1,31 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Repositories.Context;
-using Repositories.Entities;
-
-namespace WarehouseAPI.Controllers
+﻿namespace WarehouseAPI.Controllers
 {
-    [Produces("application/json")]
+    using System.Linq;
+    using System.Threading.Tasks;
+    using AutoMapper;
+    using DTOs.Gettable;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using Repositories.Context;
+    using Repositories.Entities;
+
+    //[Produces("application/json")]
     [Route("api/Orders")]
     public class OrdersController : Controller
     {
         private readonly EShopContext _context;
+
+        #region CONSTRUCTORS
 
         public OrdersController(EShopContext context)
         {
             _context = context;
         }
 
+        #endregion
+
         // GET: api/Orders
         [HttpGet]
-        public IEnumerable<Order> GetOrders()
+        public async Task<IActionResult> GetOrders()
         {
-            return _context.Orders;
+            var orders = await _context.Orders
+                .Include(o => o.OrderDetails)
+                .ToListAsync();
+
+            var orderDTOs = Mapper.Map<OrderToGetDTO>(orders);
+
+            return Ok(orderDTOs);
         }
 
         // GET: api/Orders/5
@@ -44,7 +53,9 @@ namespace WarehouseAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(order);
+            var orderDTO = Mapper.Map<OrderToGetDTO>(order);
+
+            return Ok(orderDTO);
         }
 
         // PUT: api/Orders/5

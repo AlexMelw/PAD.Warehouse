@@ -1,7 +1,7 @@
-﻿using Microsoft.Net.Http.Headers;
-
-namespace CustomFormatter.Formatters.Internal
+﻿namespace WarehouseAPI.OutputFormatters.Internal
 {
+    using Microsoft.Net.Http.Headers;
+
     internal class MediaTypeHeaderValues
     {
         public static readonly MediaTypeHeaderValue ApplicationYaml

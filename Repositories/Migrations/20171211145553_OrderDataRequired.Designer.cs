@@ -11,9 +11,10 @@ using System;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(EShopContext))]
-    partial class EShopContextModelSnapshot : ModelSnapshot
+    [Migration("20171211145553_OrderDataRequired")]
+    partial class OrderDataRequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,9 +42,10 @@ namespace Repositories.Migrations
 
                     b.Property<long>("CustomerId");
 
-                    b.Property<DateTime>("DateCreated");
-
                     b.Property<string>("DeliveryAddress")
+                        .IsRequired();
+
+                    b.Property<string>("OrderDate")
                         .IsRequired();
 
                     b.HasKey("Id");
@@ -63,6 +65,8 @@ namespace Repositories.Migrations
                     b.Property<long>("ProductId");
 
                     b.Property<int>("Quantity");
+
+                    b.Property<decimal>("Total");
 
                     b.HasKey("Id");
 

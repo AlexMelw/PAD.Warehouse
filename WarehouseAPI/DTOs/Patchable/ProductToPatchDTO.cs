@@ -1,4 +1,4 @@
-﻿namespace WarehouseAPI.Controllers
+﻿namespace WarehouseAPI.DTOs.Patchable
 {
     public class ProductToPatchDTO
     {

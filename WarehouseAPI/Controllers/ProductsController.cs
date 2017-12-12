@@ -8,6 +8,8 @@ namespace WarehouseAPI.Controllers
     using AutoMapper;
     using DTOs;
     using DTOs.Creational;
+    using DTOs.Gettable;
+    using DTOs.Patchable;
     using DTOs.Updatable;
     using HATEOAS;
     using Microsoft.AspNetCore.JsonPatch;
@@ -35,9 +37,30 @@ namespace WarehouseAPI.Controllers
         [HttpGet]
         public IActionResult GetProducts([FromQuery] ProductFilter filter)
         {
-            var hateoasProductsDTO = Mapper.Map<List<ProductToGetDTO>>(_context.Products);
+            var hateoasProductDTOs = Mapper.Map<List<ProductToGetDTO>>(_context.Products);
 
-            hateoasProductsDTO.ForEach(p =>
+            if (filter.Label != null)
+            {
+                hateoasProductDTOs = hateoasProductDTOs.Where(p => p.Label.Contains(filter.Label)).ToList();
+            }
+
+            if (filter.LPrice != 0)
+            {
+                hateoasProductDTOs = hateoasProductDTOs.Where(p => p.Price <= filter.LPrice).ToList();
+            }
+
+            if (filter.GPrice != decimal.MaxValue)
+            {
+                hateoasProductDTOs = hateoasProductDTOs.Where(p => p.Price >= filter.GPrice).ToList();
+            }
+
+            if (filter.Page.Size != int.MaxValue)
+            {
+                hateoasProductDTOs =
+                    hateoasProductDTOs.Skip((filter.Page.Num - 1) * filter.Page.Size).Take(filter.Page.Size).ToList();
+            }
+            
+            hateoasProductDTOs.ForEach(p =>
             {
                 p.Links = new List<Link>
                 {
@@ -45,33 +68,13 @@ namespace WarehouseAPI.Controllers
                     {
                         Rel = $"/{nameof(Product)}",
                         Type = "GET",
-                        Href = Url.Action("GetProduct", "Products", new { Id = p.Id }, Request.Scheme, Request.Host.Host)
+                        Href = Url.Action("GetProduct", "Products", new { Id = p.Id }, Request.Scheme,
+                            Request.Host.Host)
                     }
                 };
             });
 
-            if (filter.Label != null)
-            {
-                hateoasProductsDTO = hateoasProductsDTO.Where(p => p.Label.Contains(filter.Label)).ToList();
-            }
-
-            if (filter.LPrice != 0)
-            {
-                hateoasProductsDTO = hateoasProductsDTO.Where(p => p.Price <= filter.LPrice).ToList();
-            }
-
-            if (filter.GPrice != decimal.MaxValue)
-            {
-                hateoasProductsDTO = hateoasProductsDTO.Where(p => p.Price >= filter.GPrice).ToList();
-            }
-
-            if (filter.Page.Size != int.MaxValue)
-            {
-                hateoasProductsDTO =
-                    hateoasProductsDTO.Skip((filter.Page.Num - 1) * filter.Page.Size).Take(filter.Page.Size).ToList();
-            }
-
-            return Ok(hateoasProductsDTO);
+            return Ok(hateoasProductDTOs);
         }
 
         // GET: api/Products/5
@@ -83,7 +86,7 @@ namespace WarehouseAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var product = await _context.Products.SingleOrDefaultAsync(m => m.Id == id);
+            var product = await _context.Products.SingleOrDefaultAsync(p => p.Id == id);
 
             var hateoasProductDTO = Mapper.Map<ProductToGetDTO>(product);
 
@@ -98,7 +101,8 @@ namespace WarehouseAPI.Controllers
                 {
                     Rel = $"/{nameof(Product)}",
                     Type = "GET",
-                    Href = Url.Action("GetProduct", "Products", new { Id = hateoasProductDTO.Id }, Request.Scheme, Request.Host.Host)
+                    Href = Url.Action("GetProduct", "Products", new { Id = hateoasProductDTO.Id }, Request.Scheme,
+                        Request.Host.Host)
                 }
             };
 
@@ -108,7 +112,7 @@ namespace WarehouseAPI.Controllers
 
         // PUT: api/Products/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct([FromRoute] long id, [FromBody] ProductToUpdateDTO productDto)
+        public async Task<IActionResult> PutProduct([FromRoute] long id, [FromBody] ProductToUpdateDTO productDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -117,7 +121,7 @@ namespace WarehouseAPI.Controllers
 
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
 
-            Mapper.Map(productDto, product);
+            Mapper.Map(productDTO, product);
 
             //product.Label = productDto.Label;
             //product.Price = productDto.Price;
