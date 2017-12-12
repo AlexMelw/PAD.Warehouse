@@ -1,4 +1,6 @@
-﻿namespace WarehouseAPI.Controllers
+﻿using WarehouseAPI.WebApiHelpers;
+
+namespace WarehouseAPI.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -31,7 +33,7 @@
 
         //GET: api/Products
         [HttpGet]
-        public IActionResult GetProducts()
+        public IActionResult GetProducts([FromQuery] ProductFilter filter)
         {
             var hateoasProductsDTO = Mapper.Map<List<ProductToGetDTO>>(_context.Products);
 
@@ -47,6 +49,27 @@
                     }
                 };
             });
+
+            if (filter.Label != null)
+            {
+                hateoasProductsDTO = hateoasProductsDTO.Where(p => p.Label.Contains(filter.Label)).ToList();
+            }
+
+            if (filter.LPrice != 0)
+            {
+                hateoasProductsDTO = hateoasProductsDTO.Where(p => p.Price <= filter.LPrice).ToList();
+            }
+
+            if (filter.GPrice != decimal.MaxValue)
+            {
+                hateoasProductsDTO = hateoasProductsDTO.Where(p => p.Price >= filter.GPrice).ToList();
+            }
+
+            if (filter.Page.Size != int.MaxValue)
+            {
+                hateoasProductsDTO =
+                    hateoasProductsDTO.Skip((filter.Page.Num - 1) * filter.Page.Size).Take(filter.Page.Size).ToList();
+            }
 
             return Ok(hateoasProductsDTO);
         }
