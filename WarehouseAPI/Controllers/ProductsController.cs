@@ -1,4 +1,6 @@
-﻿namespace WarehouseAPI.Controllers
+﻿using WarehouseAPI.WebApiHelpers;
+
+namespace WarehouseAPI.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -33,10 +35,31 @@
 
         //GET: api/Products
         [HttpGet]
-        public IActionResult GetProducts()
+        public IActionResult GetProducts([FromQuery] ProductFilter filter)
         {
             var hateoasProductDTOs = Mapper.Map<List<ProductToGetDTO>>(_context.Products);
 
+            if (filter.Label != null)
+            {
+                hateoasProductDTOs = hateoasProductDTOs.Where(p => p.Label.Contains(filter.Label)).ToList();
+            }
+
+            if (filter.LPrice != 0)
+            {
+                hateoasProductDTOs = hateoasProductDTOs.Where(p => p.Price <= filter.LPrice).ToList();
+            }
+
+            if (filter.GPrice != decimal.MaxValue)
+            {
+                hateoasProductDTOs = hateoasProductDTOs.Where(p => p.Price >= filter.GPrice).ToList();
+            }
+
+            if (filter.Page.Size != int.MaxValue)
+            {
+                hateoasProductDTOs =
+                    hateoasProductDTOs.Skip((filter.Page.Num - 1) * filter.Page.Size).Take(filter.Page.Size).ToList();
+            }
+            
             hateoasProductDTOs.ForEach(p =>
             {
                 p.Links = new List<Link>
