@@ -37,37 +37,31 @@ namespace WarehouseAPI.Controllers
         [HttpGet]
         public IActionResult GetProducts([FromQuery] ProductFilter filter)
         {
-            List<Product> products = default;
+            IQueryable<Product> products = _context.Products;
 
             if (filter.Label != null)
             {
-                products = _context.Products?.Where(p => p.Label.Contains(filter.Label)).ToList() ?? Enumerable.Empty<Product>().ToList();
-                return TransformProductsToDTOs(products);
+                products = products?.Where(p => p.Label.Contains(filter.Label)) ?? Enumerable.Empty<Product>().AsQueryable();
             }
 
             if (filter.LPrice != 0)
             {
-                products = _context.Products?.Where(p => p.Price <= filter.LPrice).ToList() ?? Enumerable.Empty<Product>().ToList();
-                return TransformProductsToDTOs(products);
+                products = products?.Where(p => p.Price <= filter.LPrice) ?? Enumerable.Empty<Product>().AsQueryable();
             }
 
             if (filter.GPrice != decimal.MaxValue)
             {
-                products = _context.Products?.Where(p => p.Price >= filter.GPrice).ToList() ?? Enumerable.Empty<Product>().ToList();
-                return TransformProductsToDTOs(products);
+                products = products?.Where(p => p.Price >= filter.GPrice) ?? Enumerable.Empty<Product>().AsQueryable();
             }
 
             if (filter.Page.Size != int.MaxValue)
             {
-                products = _context.Products?.Skip((filter.Page.Num - 1) * filter.Page.Size)
-                    .Take(filter.Page.Size)
-                    .ToList() ?? Enumerable.Empty<Product>().ToList();
-
-                return TransformProductsToDTOs(products);
+                products = products?.Skip((filter.Page.Num - 1) * filter.Page.Size)
+                    .Take(filter.Page.Size) ?? Enumerable.Empty<Product>().AsQueryable();
+                
             }
-
-            products = _context.Products?.ToList() ?? Enumerable.Empty<Product>().ToList();
-            return TransformProductsToDTOs(products);
+            
+            return TransformProductsToDTOs(products.ToList());
         }
 
         private IActionResult TransformProductsToDTOs(List<Product> products)
