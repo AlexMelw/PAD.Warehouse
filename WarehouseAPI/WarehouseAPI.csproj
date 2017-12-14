@@ -34,10 +34,4 @@
     <ProjectReference Include="..\Repositories\Repositories.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="HibernatingRhinos.Profiler.Appender">
-      <HintPath>G:\downloads\EntityFramework.Profiler-v4.0-Build-4049\Profiler\HibernatingRhinos.Profiler.Appender.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
