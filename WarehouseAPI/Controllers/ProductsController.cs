@@ -1,4 +1,6 @@
-﻿namespace WarehouseAPI.Controllers
+﻿using WarehouseAPI.WebApiHelpers;
+
+namespace WarehouseAPI.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -33,9 +35,38 @@
 
         //GET: api/Products
         [HttpGet]
-        public IActionResult GetProducts()
+        public IActionResult GetProducts([FromQuery] ProductFilter filter)
         {
-            var hateoasProductDTOs = Mapper.Map<List<ProductToGetDTO>>(_context.Products);
+            IQueryable<Product> products = _context.Products;
+
+            if (filter.Label != null)
+            {
+                products = products?.Where(p => p.Label.Contains(filter.Label)) ?? Enumerable.Empty<Product>().AsQueryable();
+            }
+
+            if (filter.LPrice != 0)
+            {
+                products = products?.Where(p => p.Price <= filter.LPrice) ?? Enumerable.Empty<Product>().AsQueryable();
+            }
+
+            if (filter.GPrice != decimal.MaxValue)
+            {
+                products = products?.Where(p => p.Price >= filter.GPrice) ?? Enumerable.Empty<Product>().AsQueryable();
+            }
+
+            if (filter.Page.Size != int.MaxValue)
+            {
+                products = products?.Skip((filter.Page.Num - 1) * filter.Page.Size)
+                    .Take(filter.Page.Size) ?? Enumerable.Empty<Product>().AsQueryable();
+                
+            }
+            
+            return TransformProductsToDTOs(products.ToList());
+        }
+
+        private IActionResult TransformProductsToDTOs(List<Product> products)
+        {
+            var hateoasProductDTOs = Mapper.Map<List<ProductToGetDTO>>(products);
 
             hateoasProductDTOs.ForEach(p =>
             {
@@ -52,6 +83,7 @@
             });
 
             return Ok(hateoasProductDTOs);
+          
         }
 
         // GET: api/Products/5

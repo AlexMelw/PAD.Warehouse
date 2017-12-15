@@ -1,4 +1,6 @@
-﻿namespace WarehouseAPI.Controllers
+﻿using WarehouseAPI.WebApiHelpers;
+
+namespace WarehouseAPI.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -32,19 +34,48 @@
 
         // GET: api/Customers
         [HttpGet]
-        public IActionResult GetCustomers(bool withOrders = false, bool withOrderDetails = false)
+        public IActionResult GetCustomers([FromQuery] CustomerFilter filter)
         {
-            if (withOrders && withOrderDetails)
+            IQueryable<Customer> customers = _context.Customers;
+
+            if (filter.LName != null)
             {
-                return GetCustomersWithOrdersAndOrderDetails();
+                customers = customers?.Where(c => c.LastName == filter.LName) ?? Enumerable.Empty<Customer>().AsQueryable();
             }
 
-            if (withOrders && !withOrderDetails)
+            if (filter.FName != null)
             {
-                return GetCustomersWithOrders();
+                customers = customers?.Where(c => c.FirstName == filter.FName) ?? Enumerable.Empty<Customer>().AsQueryable();
             }
 
-            return GetCustomersOnly();
+            if (filter.FName_start_with != null)
+            {
+                customers = customers?.Where(c => c.FirstName.StartsWith(filter.FName_start_with)) ?? Enumerable.Empty<Customer>().AsQueryable();
+            }
+
+            if (filter.LName_start_with != null)
+            {
+                customers = customers?.Where(c => c.LastName.StartsWith(filter.LName_start_with)) ?? Enumerable.Empty<Customer>().AsQueryable();
+            }
+
+            if (filter.Page.Size != int.MaxValue)
+            {
+                customers = customers?.Skip((filter.Page.Num - 1) * filter.Page.Size)
+                    .Take(filter.Page.Size) ?? Enumerable.Empty<Customer>().AsQueryable();
+
+            }
+
+            if (filter.WithOrders && filter.WithOrderDetails)
+            {
+                return GetCustomersWithOrdersAndOrderDetails(customers);
+            }
+
+            if (filter.WithOrders && !filter.WithOrderDetails)
+            {
+                return GetCustomersWithOrders(customers);
+            }
+
+            return GetCustomersOnly(customers);
         }
 
         // GET: api/Customers/5
@@ -188,9 +219,9 @@
 
         #region Helper Methods
 
-        private IActionResult GetCustomersOnly()
+        private IActionResult GetCustomersOnly(IQueryable<Customer> qCustomers)
         {
-            List<Customer> customers = _context.Customers
+            List<Customer> customers = qCustomers
                 .ToList();
 
             var hateoasCustomerDTOs = Mapper.Map<List<CustomerToGetDTO>>(customers);
@@ -212,9 +243,9 @@
             return Ok(hateoasCustomerDTOs);
         }
 
-        private IActionResult GetCustomersWithOrders()
+        private IActionResult GetCustomersWithOrders(IQueryable<Customer> qCustomers)
         {
-            List<Customer> customers = _context.Customers
+            List<Customer> customers = qCustomers
                 .Include(c => c.Orders)
                 .ToList();
 
@@ -257,9 +288,9 @@
             return Ok(hateoasCustomerDTOs);
         }
 
-        private IActionResult GetCustomersWithOrdersAndOrderDetails()
+        private IActionResult GetCustomersWithOrdersAndOrderDetails(IQueryable<Customer> qCustomers)
         {
-            List<Customer> customers = _context.Customers
+            List<Customer> customers = qCustomers
                 .Include(c => c.Orders)
                 .ThenInclude(o => o.OrderDetails)
                 .ToList();

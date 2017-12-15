@@ -1,4 +1,7 @@
-﻿namespace WarehouseAPI.Controllers
+﻿using Microsoft.EntityFrameworkCore.Extensions.Internal;
+using WarehouseAPI.WebApiHelpers;
+
+namespace WarehouseAPI.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -27,13 +30,35 @@
 
         // GET: api/Orders
         [HttpGet]
-        public async Task<IActionResult> GetOrders()
+        public async Task<IActionResult> GetOrders([FromQuery] OrderFilter filter)
         {
-            var orders = await _context.Orders
-                .Include(o => o.OrderDetails)
+            IQueryable<Order> orders = _context.Orders;
+
+            if (filter.FName != null)
+            {
+                orders = orders?.Where(o => o.Customer.FirstName == filter.FName) ?? Enumerable.Empty<Order>().AsQueryable();
+            }
+
+            if (filter.LName != null)
+            {
+                orders = orders?.Where(o => o.Customer.LastName == filter.LName) ?? Enumerable.Empty<Order>().AsQueryable();
+            }
+
+            if (filter.Address != null)
+            {
+                orders = orders?.Where(o => o.DeliveryAddress.Contains(filter.Address)) ?? Enumerable.Empty<Order>().AsQueryable();
+            }
+
+            if (filter.Page.Size != int.MaxValue)
+            {
+                orders = orders?.Skip((filter.Page.Num - 1) * filter.Page.Size)
+                    .Take(filter.Page.Size) ?? Enumerable.Empty<Order>().AsQueryable();
+            }
+
+            List<Order> orderList = await orders.Include(o => o.OrderDetails)
                 .ToListAsync();
 
-            var orderDTOs = Mapper.Map<List<OrderToGetDTO>>(orders);
+            var orderDTOs = Mapper.Map<List<OrderToGetDTO>>(orderList);
 
             return Ok(orderDTOs);
         }
