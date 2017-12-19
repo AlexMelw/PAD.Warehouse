@@ -1,6 +1,6 @@
 ﻿namespace WarehouseAPI
 {
-    using Controllers;
+    using HibernatingRhinos.Profiler.Appender.EntityFramework;
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
 
@@ -8,6 +8,9 @@
     {
         public static void Main(string[] args)
         {
+#if DEBUG
+            EntityFrameworkProfiler.Initialize();
+#endif
             BuildWebHost(args).Run();
         }
 

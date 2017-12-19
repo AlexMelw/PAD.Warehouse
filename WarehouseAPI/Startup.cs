@@ -1,5 +1,6 @@
 ﻿namespace WarehouseAPI
 {
+    using System.IO;
     using Controllers;
     using DTOs;
     using DTOs.Creational;
@@ -12,11 +13,13 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
     using OutputFormatters.Internal;
     using OutputFormatters.Yaml;
     using Repositories.Context;
     using Repositories.Entities;
     using Repositories.Extensions;
+    using Serilog;
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NamingConventions;
 
@@ -50,16 +53,15 @@
                 options.FormatterMappings.SetMediaTypeMappingForFormat("yaml", MediaTypeHeaderValues.ApplicationYaml);
             });
 
-
+            //services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
 
 #if DEBUG
             services.AddDbContext<EShopContext>(options =>
             {
-
                 options.UseSqlServer(Configuration.GetConnectionString("EShopDBLocal"));
             });
 #endif
-            
+
 #if RELEASE
             services.AddDbContext<EShopContext>(options =>
             {
@@ -67,13 +69,11 @@
                 options.UseSqlServer(Configuration.GetConnectionString("EShopDbRemote"));
             });
 #endif
-            //var connection = "Server=tcp:warehousesrv.database.windows.net,1433;Initial Catalog=WarehouseDB;Persist Security Info=False;User ID=cheetah;Password=%%JustForPad24%%;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-            //var connection = "Data Source=SLAVA-PC;Initial Catalog=EShopDB;Integrated Security=True";
-            //services.AddDbContext<EShopContext>(options => options.UseSqlServer(connection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, EShopContext eShopContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+            EShopContext eShopContext)
         {
             if (env.IsDevelopment())
             {
@@ -83,6 +83,16 @@
             {
                 app.UseExceptionHandler();
             }
+
+            // Serilog
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.RollingFile(
+                    Path.Combine(env.ContentRootPath, "Logs/Log-{Date}.txt"),
+                    retainedFileCountLimit: 30)
+                .CreateLogger();
+
+            loggerFactory.AddSerilog();
 
             app.UseStatusCodePages();
 
