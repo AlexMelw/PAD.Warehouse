@@ -15,6 +15,7 @@ namespace WarehouseAPI.Controllers
     using Microsoft.AspNetCore.JsonPatch;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
     using Repositories.Context;
     using Repositories.Entities;
 
@@ -23,12 +24,15 @@ namespace WarehouseAPI.Controllers
     public class ProductsController : Controller
     {
         private readonly EShopContext _context;
+        private readonly ILogger<ProductsController> _logger;
+        private EventId e;
 
         #region CONSTRUCTORS
 
-        public ProductsController(EShopContext context)
+        public ProductsController(EShopContext context, ILogger<ProductsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         #endregion
@@ -37,6 +41,7 @@ namespace WarehouseAPI.Controllers
         [HttpGet]
         public IActionResult GetProducts([FromQuery] ProductFilter filter)
         {
+            _logger.LogInformation($"Enter in {nameof(GetProduct)} method.");
             IQueryable<Product> products = _context.Products;
 
             if (filter.Label != null)
@@ -60,7 +65,7 @@ namespace WarehouseAPI.Controllers
                     .Take(filter.Page.Size) ?? Enumerable.Empty<Product>().AsQueryable();
                 
             }
-            
+            _logger.LogInformation("Successfully saved entity's modifications.");
             return TransformProductsToDTOs(products.ToList());
         }
 
@@ -90,8 +95,10 @@ namespace WarehouseAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct([FromRoute] long id)
         {
+            _logger.LogInformation($"Enter in {nameof(GetProduct)} method.");
             if (!ModelState.IsValid)
             {
+                _logger.LogCritical(e, "Invalid model state.");
                 return BadRequest(ModelState);
             }
 
@@ -101,6 +108,7 @@ namespace WarehouseAPI.Controllers
 
             if (product == null)
             {
+                _logger.LogWarning("Product isn't provided or is invalid.");
                 return NotFound();
             }
 
@@ -115,7 +123,7 @@ namespace WarehouseAPI.Controllers
                 }
             };
 
-
+            _logger.LogInformation("Successfully saved entity's modifications.");
             return Ok(hateoasProductDTO);
         }
 
@@ -123,8 +131,10 @@ namespace WarehouseAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct([FromRoute] long id, [FromBody] ProductToUpdateDTO productDTO)
         {
+            _logger.LogInformation($"Enter in {nameof(PutProduct)} method.");
             if (!ModelState.IsValid)
             {
+                _logger.LogCritical(e, "Invalid model state.");
                 return BadRequest(ModelState);
             }
 
@@ -141,6 +151,7 @@ namespace WarehouseAPI.Controllers
             {
                 if (await _context.SaveChangesAsync() == 0)
                 {
+                    _logger.LogError("No entities were saved.");
                     return StatusCode(500, "A problem happened while handling your request.");
                 }
             }
@@ -148,11 +159,13 @@ namespace WarehouseAPI.Controllers
             {
                 if (!ProductExists(id))
                 {
+                    _logger.LogWarning($"Product with ID={id} not found");
                     return NotFound();
                 }
+                _logger.LogError("Modificarea simultana a entitatilor.");
                 return StatusCode(500, $"Simultaneously attempt to modify {nameof(Product)} entity.");
             }
-
+            _logger.LogInformation("Successfully saved entity's modifications.");
             return NoContent();
         }
 
@@ -160,8 +173,10 @@ namespace WarehouseAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> PostProduct([FromBody] ProductToCreateDTO productDto)
         {
+            _logger.LogInformation($"Enter in {nameof(PostProduct)} method.");
             if (!ModelState.IsValid)
             {
+                _logger.LogCritical(e, "Invalid model state.");
                 return BadRequest(ModelState);
             }
 
@@ -179,6 +194,7 @@ namespace WarehouseAPI.Controllers
 
             if (await _context.SaveChangesAsync() == 0)
             {
+                _logger.LogError("No entities were saved.");
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
@@ -189,8 +205,10 @@ namespace WarehouseAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct([FromRoute] long id)
         {
+            _logger.LogInformation($"Enter in {nameof(DeleteProduct)} method.");
             if (!ModelState.IsValid)
             {
+                _logger.LogCritical(e, "Invalid model state.");
                 return BadRequest(ModelState);
             }
 
@@ -198,6 +216,7 @@ namespace WarehouseAPI.Controllers
 
             if (product == null)
             {
+                _logger.LogWarning("Product isn't provided or is invalid.");
                 return NotFound();
             }
 
@@ -205,9 +224,10 @@ namespace WarehouseAPI.Controllers
 
             if (await _context.SaveChangesAsync() == 0)
             {
+                _logger.LogError("No entities were saved.");
                 return StatusCode(500, "A problem happened while handling your request.");
             }
-
+            _logger.LogInformation("Successfully update.");
             return StatusCode(204);
         }
 
@@ -215,13 +235,16 @@ namespace WarehouseAPI.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> PatchProduct(long id, [FromBody] JsonPatchDocument<ProductToPatchDTO> patchDoc)
         {
+            _logger.LogInformation($"Enter in {nameof(PatchProduct)} method.");
             if (patchDoc == null)
             {
+                _logger.LogCritical("Product isn't provided or is invalid.");
                 return BadRequest();
             }
 
             if (!ProductExists(id))
             {
+                _logger.LogWarning($"Product with ID={id} not found");
                 return NotFound();
             }
 
@@ -244,11 +267,13 @@ namespace WarehouseAPI.Controllers
 
             if (!ModelState.IsValid)
             {
+                _logger.LogCritical(e, "Invalid model state.");
                 return BadRequest(ModelState);
             }
 
             if (patchedProduct.Id != product.Id)
             {
+                _logger.LogCritical("An attempt of modifying entity's ID was occurred.");
                 ModelState.AddModelError(nameof(product.Id), "Modification of ID isn't allowed.");
                 return BadRequest(ModelState);
             }
@@ -262,9 +287,10 @@ namespace WarehouseAPI.Controllers
 
             if (_context.SaveChanges() == 0)
             {
+                _logger.LogError("No entities were saved.");
                 return StatusCode(500, "A problem happened while handling your request.");
             }
-
+            _logger.LogInformation("Successfully saved entety's modifications.");
             return NoContent();
         }
 
