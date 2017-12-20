@@ -10,6 +10,7 @@ namespace WarehouseAPI.Controllers
     using DTOs.Gettable;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
     using Repositories.Context;
     using Repositories.Entities;
 
@@ -18,12 +19,14 @@ namespace WarehouseAPI.Controllers
     public class OrdersController : Controller
     {
         private readonly EShopContext _context;
+        private readonly ILogger<OrderDetailsController> _logger;
 
         #region CONSTRUCTORS
 
-        public OrdersController(EShopContext context)
+        public OrdersController(EShopContext context,ILogger<OrderDetailsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         #endregion
@@ -32,6 +35,7 @@ namespace WarehouseAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetOrders([FromQuery] OrderFilter filter)
         {
+            _logger.LogInformation("Retrieve all the order.");
             IQueryable<Order> orders = _context.Orders;
 
             if (filter.FName != null)
@@ -67,8 +71,10 @@ namespace WarehouseAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrder([FromRoute] long id)
         {
+            _logger.LogInformation($"Enter in {nameof(GetOrder)} method.");
             if (!ModelState.IsValid)
             {
+                _logger.LogCritical("Invalid model state");
                 return BadRequest(ModelState);
             }
 
@@ -76,11 +82,12 @@ namespace WarehouseAPI.Controllers
 
             if (order == null)
             {
+                _logger.LogWarning("Order isn't provided or is invalid.");
                 return NotFound();
             }
 
             var orderDTO = Mapper.Map<OrderToGetDTO>(order);
-
+   
             return Ok(orderDTO);
         }
 
@@ -88,13 +95,16 @@ namespace WarehouseAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrder([FromRoute] long id, [FromBody] Order order)
         {
+            _logger.LogInformation($"Enter in {nameof(PutOrder)} method.");
             if (!ModelState.IsValid)
             {
+                _logger.LogCritical("Invalid model state");
                 return BadRequest(ModelState);
             }
 
             if (id != order.Id)
             {
+                _logger.LogCritical("");
                 return BadRequest();
             }
 
@@ -108,6 +118,7 @@ namespace WarehouseAPI.Controllers
             {
                 if (!OrderExists(id))
                 {
+                    _logger.LogWarning($"Order with ID ={ id} not found");
                     return NotFound();
                 }
                 else
@@ -115,7 +126,7 @@ namespace WarehouseAPI.Controllers
                     throw;
                 }
             }
-
+            _logger.LogInformation("Successfully saved entety's modifications.");
             return NoContent();
         }
 
@@ -123,8 +134,10 @@ namespace WarehouseAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> PostOrder([FromBody] Order order)
         {
+            _logger.LogInformation($"Enter in {nameof(PostOrder)} method.");
             if (!ModelState.IsValid)
             {
+                _logger.LogCritical("Invalid model state");
                 return BadRequest(ModelState);
             }
 
@@ -138,20 +151,23 @@ namespace WarehouseAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder([FromRoute] long id)
         {
+            _logger.LogInformation($"Enter in {nameof(DeleteOrder)} method.");
             if (!ModelState.IsValid)
             {
+                _logger.LogCritical("Invalid model state");
                 return BadRequest(ModelState);
             }
 
             var order = await _context.Orders.SingleOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
+                _logger.LogWarning("Order isn't provided or is invalid.");
                 return NotFound();
             }
 
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
-
+            _logger.LogInformation("Successfully update.");
             return Ok(order);
         }
 
