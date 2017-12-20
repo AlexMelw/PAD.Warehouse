@@ -93,13 +93,13 @@ namespace WarehouseAPI.Controllers
 
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning(e, "Invalid model state.");
+                _logger.LogCritical(e, "Invalid model state.");
                 return BadRequest(ModelState);
             }
 
             if (!CustomerExists(id))
             {
-                _logger.LogCritical(e, $"User with ID={id} is not found.");
+                _logger.LogWarning(e, $"User with ID={id} is not found.");
                 return NotFound();
             }
 
@@ -126,7 +126,7 @@ namespace WarehouseAPI.Controllers
             _logger.LogInformation($"Enter in {nameof(PutCustomer)} method.");
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning(e, "Invalid model state.");
+                _logger.LogCritical(e, "Invalid model state.");
                 return BadRequest(ModelState);
             }
 
@@ -143,7 +143,7 @@ namespace WarehouseAPI.Controllers
             {
                 if (!CustomerExists(id))
                 {
-                    _logger.LogCritical(e, $"Concurrency violation while saving customer with ID={id}.");
+                    _logger.LogWarning(e, $"Concurrency violation while saving customer with ID={id}.");
                     return NotFound();
                 }
                 return StatusCode(500, $"Simultaneously attempt to modify {nameof(Customer)} entity.");
@@ -177,14 +177,14 @@ namespace WarehouseAPI.Controllers
             _logger.LogInformation($"Enter in {nameof(DeleteCustomer)} method.");
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning(e, "Invalid model state.");
+                _logger.LogCritical(e, "Invalid model state.");
                 return BadRequest(ModelState);
             }
 
             var customer = await _context.Customers.SingleOrDefaultAsync(m => m.Id == id);
             if (customer == null)
             {
-                _logger.LogCritical(e, $"User with ID={id} is not found.");
+                _logger.LogWarning(e, $"User with ID={id} is not found.");
                 return NotFound();
             }
             _logger.LogInformation($"Remove customer with ID={id} and save changes.");
@@ -203,13 +203,13 @@ namespace WarehouseAPI.Controllers
             _logger.LogInformation($"Enter in {nameof(PatchCustomer)} method.");
             if (patchDoc == null)
             {
-                _logger.LogWarning("Patch document isn't provided or is invalid.");
+                _logger.LogCritical("Patch document isn't provided or is invalid.");
                 return BadRequest();
             }
 
             if (!CustomerExists(id))
             {
-                _logger.LogCritical(e, $"User with ID={id} is not found.");
+                _logger.LogWarning(e, $"User with ID={id} is not found.");
                 return NotFound();
             }
 
@@ -223,7 +223,7 @@ namespace WarehouseAPI.Controllers
 
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning(e, "Invalid model state.");
+                _logger.LogCritical(e, "Invalid model state.");
                 return BadRequest(ModelState);
             }
 
